@@ -7,8 +7,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
  
-$word = 'rakuten';
-
+$word = 'amazon';
 $title = "$word - Buy $word at Best Price in Philippines | www.lazada.com.ph";
 
 $options = new ChromeOptions();
@@ -30,37 +29,52 @@ if ($driver->getTitle() !== "$title") {
     throw new Exception('fail');
 }
 
-// $file = "サンプル_chrome.png";
-// $driver->takeScreenshot($file);
-#root > div > div.ant-row.c10-Cg > div.ant-col-24 > div > div.ant-col-20.ant-col-push-4.c1z9Ut > div.cUQuRr > div > div.c3hhWj > div > div
-// class=" c1DXz4"
-// data-spm-anchor-id="a2o4l.searchlist.0.i2.561a574c2XCEHx"
+$photos = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c2iYAv .cRjKsc .c1ZEkM')); //写真！
+// $productName = $driver->findElements(WebDriverBy::className('c16H9d'));
 
-// $testId = $driver->findElement(WebDriverBy::className('c13VH6'));
-
-$products = [];
-$productName = $driver->findElements(WebDriverBy::className('c16H9d'));
-$prices = $driver->findElements(WebDriverBy::className('c13VH6'));
-
-if(count($productName) >= 10) {
-    foreach ($productName as $k => $v) {
-        if($k === 10) {
+foreach ($photos as $k => $v) {
+    if($k === 10) {
         break;
     }
-        $price = $v->getText();
-        echo "\n";
-        echo "[" . $k+1 . "]" . $price;
-        echo "\n";
-    }
-} else {
-        $price = $v->getText();
-        echo "\n";
-        echo "[" . $k+1 . "]" . $price;
-        echo "\n";
+    $name = $v->getAttribute('src');
+    echo($name);
+    echo "\n";
 }
 
-
-
+// if(count($productName) >= 10) {
+//     foreach ($productName as $k => $v) {
+//         if($k === 10) {
+//             break;
+//         }
+//         $products[$k]['item'] = $v->getText();
+//         // $name = $v->getText();
+//         // $products[$k] = $name;
+//         // echo "\n";
+//         // echo "[" . $k . "]" . $name;
+//         // echo "\n";
+//     }
+//     foreach ($prices as $k => $v) {
+//         if($k === 10) {
+//             break;
+//         }
+//         $products[$k]['price'] = $v->getText();
+//         // $name = $v->getText();
+//         // $products[$k] = $name;
+//         // echo "\n";
+//         // echo "[" . $k . "]" . $name;
+//         // echo "\n";
+//     }
+// } else {
+//     foreach ($productName as $k => $v) {
+//         $name = $v->getText();
+//         $products[$k]['item'] = $name;
+//     }
+//     foreach ($prices as $k => $v) {
+//         $name = $v->getText();
+//         $products[$k]['price'] = $name;
+//     }
+// }
+// print_r($products);
 // $text = $testId->getText();
 // echo "\n";
 // echo $text."\n";
