@@ -7,7 +7,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
  
-$word = 'amazon';
+$word = 'rakuten';
 
 $title = "$word - Buy $word at Best Price in Philippines | www.lazada.com.ph";
 
@@ -32,10 +32,38 @@ if ($driver->getTitle() !== "$title") {
 
 // $file = "サンプル_chrome.png";
 // $driver->takeScreenshot($file);
+#root > div > div.ant-row.c10-Cg > div.ant-col-24 > div > div.ant-col-20.ant-col-push-4.c1z9Ut > div.cUQuRr > div > div.c3hhWj > div > div
+// class=" c1DXz4"
+// data-spm-anchor-id="a2o4l.searchlist.0.i2.561a574c2XCEHx"
 
-$testId = $driver->findElement(WebDriverBy::className('c16H9d'));
-$text = $testId->getText();
-echo $text;
+// $testId = $driver->findElement(WebDriverBy::className('c13VH6'));
+
+$products = [];
+$productName = $driver->findElements(WebDriverBy::className('c16H9d'));
+$prices = $driver->findElements(WebDriverBy::className('c13VH6'));
+
+if(count($productName) >= 10) {
+    foreach ($productName as $k => $v) {
+        if($k === 10) {
+        break;
+    }
+        $price = $v->getText();
+        echo "\n";
+        echo "[" . $k+1 . "]" . $price;
+        echo "\n";
+    }
+} else {
+        $price = $v->getText();
+        echo "\n";
+        echo "[" . $k+1 . "]" . $price;
+        echo "\n";
+}
+
+
+
+// $text = $testId->getText();
+// echo "\n";
+// echo $text."\n";
 
 // $a = $driver->findElemenet(WebDriverBy::className("lzd-logo-content"));
 // foreach ($a as $v) {
