@@ -6,6 +6,7 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
+use Facebook\WebDriver\WebDriverDimension;
 
 $word = 'amazon';
 $title = "$word - Buy $word at Best Price in Philippines | www.lazada.com.ph";
@@ -22,14 +23,21 @@ $element = $driver->findElement(WebDriverBy::name('q'));
 $element->sendKeys($word);
 $element->submit();
 
-// waitはms. titleに$titleが表示されるまで。
-$driver->wait(150)->until(
-    WebDriverExpectedCondition::titleIs($title)
+
+$driver->executeScript("window.scrollTo(300, 330);");
+
+// className('c3gNPq')が見られるまで待機。
+$driver->wait(1000)->until(
+    WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::className('c3gNPq'))
 );
 
 if ($driver->getTitle() !== "$title") {
     throw new Exception('fail');
 }
+
+// $dimension = new WebDriverDimension(1920, 1080); // width, height
+// $driver->manage()->window()->setSize($dimension);
+
 
 
 /**
@@ -61,8 +69,6 @@ if (count($photos) < 0) {
 // }
 
 // print_r($items);
-
-
 // foreach ($itemUrl as $k => $v) {
 //     if ($k === 10) {
 //         break;
@@ -73,7 +79,7 @@ if (count($photos) < 0) {
 
 
 foreach ($photos as $k => $v) {
-    if ($k === 3) {
+    if ($k === 10) {
         break;
     }
     $items[$k]['photoUrl'] = $v->getAttribute('src');
@@ -93,18 +99,17 @@ foreach ($photos as $k => $v) {
 // ----------------------------------------
 // title
 
-
 // title
 if (count($productNames) >= 10) {
     foreach ($productNames as $k => $v) {
-        if ($k === 3) {
+        if ($k === 10) {
             break;
         }
         $items[$k]['titleName'] = $v->getText();
     }
 }
-// print_r($items);
-// echo "\n";
+print_r($items);
+echo "\n";
 
 // else {
 //     $productName = $v->getText();
@@ -130,4 +135,7 @@ if (count($productNames) >= 10) {
 // $items = array_filter($items, 'myFilter');
 // var_dump($items);
 // echo "\n";
+// $driver->executeScript("window.scrollTo(300, 300);");
+$file = "サンプル_chrome.png";
+$driver->takeScreenshot($file);
 $driver->close();

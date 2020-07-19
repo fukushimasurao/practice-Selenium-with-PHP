@@ -4,6 +4,29 @@ Seleniumをphpで使う。動的サイトをスクレイピングする。
 ## 参考URL
 http://yebisupress.dac.co.jp/2018/07/06/test_automation_with_selenium-x-php/
 
+
+## selenium-server-standaloneをインストール。
+`brew install selenium-server-standalone`
+
+## 各ブラウザ用ドライバのインストール
+* Selenium Google Chrome Driver
+https://sites.google.com/a/chromium.org/chromedriver/
+→ https://chromedriver.storage.googleapis.com/2.38/chromedriver_mac64.zip
+
+## facebook-webdriverのインストール
+composerで、インストール。
+```Shell
+$ php composer.phar require facebook/webdriver
+```
+
+`Could not open input file: composer.phar`の場合は。以下の通り。
+* https://www.kakistamp.com/entry/2019/07/13/003852
+
+```Shell
+$ php -r "readfile('https://getcomposer.org/installer');" | php
+```
+
+
 ## サーバー起動
 `$ selenium-server -port 4444 &`
 ```Shell
