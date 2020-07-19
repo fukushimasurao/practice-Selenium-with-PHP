@@ -8,11 +8,15 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverDimension;
 
+// 検索したいワードを$wordに入れる。
 $word = 'amazon';
 $title = "$word - Buy $word at Best Price in Philippines | www.lazada.com.ph";
 
+// chrome利用用意
 $options = new ChromeOptions();
 $options->addArguments(['--headless']);
+$options->addArguments(["window-size=1024,2048"]);
+
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
 $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
@@ -23,22 +27,14 @@ $element = $driver->findElement(WebDriverBy::name('q'));
 $element->sendKeys($word);
 $element->submit();
 
-
-$driver->executeScript("window.scrollTo(300, 330);");
-
-// className('c3gNPq')が見られるまで待機。
-$driver->wait(1000)->until(
-    WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::className('c3gNPq'))
+// 商品画像を全部表示するため、画面を少し右に移動
+$driver->executeScript("window.scrollTo(300, 0);");
+$driver->wait(15)->until(
+    WebDriverExpectedCondition::titleIs($title)
 );
-
 if ($driver->getTitle() !== "$title") {
     throw new Exception('fail');
 }
-
-// $dimension = new WebDriverDimension(1920, 1080); // width, height
-// $driver->manage()->window()->setSize($dimension);
-
-
 
 /**
  * 必要なもの
@@ -51,32 +47,10 @@ $photos = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c2iYAv .cRjKs
 $productNames = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c3KeDq .c16H9d')); //->text
 
 $items = [];
+// 商品あるかチェック
 if (count($photos) < 0) {
-    throw new Exception('no photos.');
+    throw new Exception('no item.');
 }
-
-// foreach ($itemUrls as $k => $v) {
-//     if ($k === 3) {
-//         break;
-//     }
-//     // $name = $v->getAttribute('src');
-//     // $items[$k]['itemUrl'] = $v->getAttribute('href');
-//     // $items[$k]['itemUrl'] = $v->getText();
-
-//     $name = $v->getText();
-//     echo ($name);
-//     echo "\n";
-// }
-
-// print_r($items);
-// foreach ($itemUrl as $k => $v) {
-//     if ($k === 10) {
-//         break;
-//     }
-//     // $name = $v->getAttribute('src');
-//     $items[$k]['itemUrl'] = $v->getAttribute('href');
-// }
-
 
 foreach ($photos as $k => $v) {
     if ($k === 10) {
@@ -85,57 +59,16 @@ foreach ($photos as $k => $v) {
     $items[$k]['photoUrl'] = $v->getAttribute('src');
 }
 
-// // 空白のvalurがあれば、削除
-// function myFilter($val)
-// {
-//     return !is_null($val);
-// }
-
-// // TODO:keyの再配列が必要かも。
-// $items = array_filter($items, 'myFilter');
-// var_dump($items);
-// echo "\n";
-// $driver->close();
-// ----------------------------------------
-// title
-
-// title
-if (count($productNames) >= 10) {
-    foreach ($productNames as $k => $v) {
-        if ($k === 10) {
-            break;
-        }
-        $items[$k]['titleName'] = $v->getText();
+foreach ($productNames as $k => $v) {
+    if ($k === 10) {
+        break;
     }
+    $items[$k]['titleName'] = $v->getText();
 }
+
 print_r($items);
 echo "\n";
 
-// else {
-//     $productName = $v->getText();
-//     echo $productName;
-//     echo "\n";
-// }
-
-// $items = [];
-// foreach ($title as $k => $v) {
-//     if ($k === 10) {
-//         break;
-//     }
-//     $items[] = $v->getAttribute('src');
-// }
-
-// // 空白のvalurがあれば、削除
-// function myFilter($val)
-// {
-//     return !is_null($val);
-// }
-
-// TODO:keyの再配列が必要かも。
-// $items = array_filter($items, 'myFilter');
-// var_dump($items);
-// echo "\n";
-// $driver->executeScript("window.scrollTo(300, 300);");
 $file = "サンプル_chrome.png";
 $driver->takeScreenshot($file);
 $driver->close();
