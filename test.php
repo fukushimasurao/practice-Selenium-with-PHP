@@ -30,58 +30,23 @@ if ($driver->getTitle() !== "$title") {
 }
 
 $photos = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c2iYAv .cRjKsc .c1ZEkM')); //写真！
-// $productName = $driver->findElements(WebDriverBy::className('c16H9d'));
-
+$name = [];
 foreach ($photos as $k => $v) {
     if($k === 10) {
         break;
     }
-    $name = $v->getAttribute('src');
-    echo($name);
-    echo "\n";
+    $name[] = $v->getAttribute('src');
+
 }
 
-// if(count($productName) >= 10) {
-//     foreach ($productName as $k => $v) {
-//         if($k === 10) {
-//             break;
-//         }
-//         $products[$k]['item'] = $v->getText();
-//         // $name = $v->getText();
-//         // $products[$k] = $name;
-//         // echo "\n";
-//         // echo "[" . $k . "]" . $name;
-//         // echo "\n";
-//     }
-//     foreach ($prices as $k => $v) {
-//         if($k === 10) {
-//             break;
-//         }
-//         $products[$k]['price'] = $v->getText();
-//         // $name = $v->getText();
-//         // $products[$k] = $name;
-//         // echo "\n";
-//         // echo "[" . $k . "]" . $name;
-//         // echo "\n";
-//     }
-// } else {
-//     foreach ($productName as $k => $v) {
-//         $name = $v->getText();
-//         $products[$k]['item'] = $name;
-//     }
-//     foreach ($prices as $k => $v) {
-//         $name = $v->getText();
-//         $products[$k]['price'] = $name;
-//     }
-// }
-// print_r($products);
-// $text = $testId->getText();
-// echo "\n";
-// echo $text."\n";
+// 空白のvalurがあれば、削除
+function myFilter($val) {
+	return !is_null($val);
+}
 
-// $a = $driver->findElemenet(WebDriverBy::className("lzd-logo-content"));
-// foreach ($a as $v) {
-//     echo  $v; 
-// }
+// TODO:keyの再配列が必要かも。
+$name = array_filter($name, 'myFilter');
+var_dump($name);
+echo "\n";
 
 $driver->close();
