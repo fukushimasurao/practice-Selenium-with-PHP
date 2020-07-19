@@ -1,12 +1,12 @@
 <?php
 require './vendor/autoload.php';
- 
+
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
- 
+
 $word = 'amazon';
 $title = "$word - Buy $word at Best Price in Philippines | www.lazada.com.ph";
 
@@ -21,7 +21,9 @@ $browserLogs = $driver->manage()->getLog('browser');
 $element = $driver->findElement(WebDriverBy::name('q'));
 $element->sendKeys($word);
 $element->submit();
-$driver->wait(15)->until(
+
+// waitはms. titleに$titleが表示されるまで。
+$driver->wait(150)->until(
     WebDriverExpectedCondition::titleIs($title)
 );
 
@@ -29,24 +31,103 @@ if ($driver->getTitle() !== "$title") {
     throw new Exception('fail');
 }
 
-$photos = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c2iYAv .cRjKsc .c1ZEkM')); //写真！
-$name = [];
+
+/**
+ * 必要なもの
+ * 商品ごとのURL
+ * 写真
+ * タイトル。
+ */
+// $itemUrls = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c2iYAv .cRjKsc'));
+$photos = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c2iYAv .cRjKsc .c1ZEkM'));
+$productNames = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c3KeDq .c16H9d')); //->text
+
+$items = [];
+if (count($photos) < 0) {
+    throw new Exception('no photos.');
+}
+
+// foreach ($itemUrls as $k => $v) {
+//     if ($k === 3) {
+//         break;
+//     }
+//     // $name = $v->getAttribute('src');
+//     // $items[$k]['itemUrl'] = $v->getAttribute('href');
+//     // $items[$k]['itemUrl'] = $v->getText();
+
+//     $name = $v->getText();
+//     echo ($name);
+//     echo "\n";
+// }
+
+// print_r($items);
+
+
+// foreach ($itemUrl as $k => $v) {
+//     if ($k === 10) {
+//         break;
+//     }
+//     // $name = $v->getAttribute('src');
+//     $items[$k]['itemUrl'] = $v->getAttribute('href');
+// }
+
+
 foreach ($photos as $k => $v) {
-    if($k === 10) {
+    if ($k === 3) {
         break;
     }
-    $name[] = $v->getAttribute('src');
-
+    $items[$k]['photoUrl'] = $v->getAttribute('src');
 }
 
-// 空白のvalurがあれば、削除
-function myFilter($val) {
-	return !is_null($val);
+// // 空白のvalurがあれば、削除
+// function myFilter($val)
+// {
+//     return !is_null($val);
+// }
+
+// // TODO:keyの再配列が必要かも。
+// $items = array_filter($items, 'myFilter');
+// var_dump($items);
+// echo "\n";
+// $driver->close();
+// ----------------------------------------
+// title
+
+
+// title
+if (count($productNames) >= 10) {
+    foreach ($productNames as $k => $v) {
+        if ($k === 3) {
+            break;
+        }
+        $items[$k]['titleName'] = $v->getText();
+    }
 }
+// print_r($items);
+// echo "\n";
+
+// else {
+//     $productName = $v->getText();
+//     echo $productName;
+//     echo "\n";
+// }
+
+// $items = [];
+// foreach ($title as $k => $v) {
+//     if ($k === 10) {
+//         break;
+//     }
+//     $items[] = $v->getAttribute('src');
+// }
+
+// // 空白のvalurがあれば、削除
+// function myFilter($val)
+// {
+//     return !is_null($val);
+// }
 
 // TODO:keyの再配列が必要かも。
-$name = array_filter($name, 'myFilter');
-var_dump($name);
-echo "\n";
-
+// $items = array_filter($items, 'myFilter');
+// var_dump($items);
+// echo "\n";
 $driver->close();
