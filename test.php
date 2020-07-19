@@ -36,13 +36,7 @@ if ($driver->getTitle() !== "$title") {
     throw new Exception('fail');
 }
 
-/**
- * 必要なもの
- * 商品ごとのURL
- * 写真
- * タイトル。
- */
-// $itemUrls = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c2iYAv .cRjKsc'));
+$itemUrls = $driver->findElements(WebDriverBy::cssSelector('div.c2iYAv > div.cRjKsc > a')); //->text
 $photos = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c2iYAv .cRjKsc .c1ZEkM'));
 $productNames = $driver->findElements(WebDriverBy::cssSelector('.c5TXIP .c3KeDq .c16H9d')); //->text
 
@@ -52,13 +46,18 @@ if (count($photos) < 0) {
     throw new Exception('no item.');
 }
 
+foreach ($itemUrls as $k => $v) {
+    if ($k === 10) {
+        break;
+    }
+    $items[$k]['$itemUrl'] = $v->getAttribute('href');
+}
 foreach ($photos as $k => $v) {
     if ($k === 10) {
         break;
     }
     $items[$k]['photoUrl'] = $v->getAttribute('src');
 }
-
 foreach ($productNames as $k => $v) {
     if ($k === 10) {
         break;
@@ -69,6 +68,7 @@ foreach ($productNames as $k => $v) {
 print_r($items);
 echo "\n";
 
-$file = "サンプル_chrome.png";
-$driver->takeScreenshot($file);
+// ↓コメントアウト外せば、どこをスクレイピングしているかとスクリーンショットで確認できる↓
+// $file = "サンプル_chrome.png";
+// $driver->takeScreenshot($file);
 $driver->close();
