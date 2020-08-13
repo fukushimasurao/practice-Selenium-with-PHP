@@ -4,3 +4,4 @@ $a = new App\Service\Lazada;
 echo '<pre>';
 var_dump($a->lazadaSearch('japan'));
 echo '<pre>';
+//test
